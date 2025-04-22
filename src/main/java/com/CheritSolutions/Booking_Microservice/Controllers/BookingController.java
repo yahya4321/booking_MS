@@ -1,6 +1,8 @@
 // src/main/java/com/CheritSolutions/Booking_Microservice/controllers/BookingController.java
 package com.CheritSolutions.Booking_Microservice.Controllers;
 
+import static java.lang.Math.log;
+
 import com.CheritSolutions.Booking_Microservice.client.BusinessServiceClient;
 import com.CheritSolutions.Booking_Microservice.dto.BookingRequest;
 import com.CheritSolutions.Booking_Microservice.dto.BookingResponse;
@@ -9,8 +11,8 @@ import com.CheritSolutions.Booking_Microservice.dto.ServiceResponse;
 import com.CheritSolutions.Booking_Microservice.services.BookingService;
 
 import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,13 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 
 @RestController
 @RequestMapping("/api/v1/bookings")
 public class BookingController {
+
+    private static final Logger log = LoggerFactory.getLogger(BookingController.class); // Declare logger
+
 
     @Autowired
     private BookingService bookingService;

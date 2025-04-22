@@ -1,4 +1,4 @@
-package com.CheritSolutions.Booking_Microservice.Entities;
+/*package com.CheritSolutions.Booking_Microservice.Entities;
 
 
 import java.time.Instant;
@@ -14,19 +14,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Version;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class AvailabilitySlot {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -46,4 +38,4 @@ public class AvailabilitySlot {
     
     @Version
     private Integer version;
-}
+}*/

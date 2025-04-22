@@ -3,7 +3,6 @@ package com.CheritSolutions.Booking_Microservice.services;
 import com.CheritSolutions.Booking_Microservice.Entities.Booking;
 import com.CheritSolutions.Booking_Microservice.Entities.Feedback;
 import com.CheritSolutions.Booking_Microservice.dto.BookingResponse;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -20,7 +19,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-@Slf4j
+
 @Service
 public class EmailService {
 
@@ -182,10 +181,8 @@ public class EmailService {
 
             helper.setText(htmlContent, true);
             mailSender.send(message);
-            log.info("Sent confirmation email to {} for booking ID: {}", recipientEmail, booking.getId());
         } catch (MessagingException e) {
-            log.error("Failed to send email to {} for booking ID: {}. Error: {}", 
-                recipientEmail, booking.getId(), e.getMessage());
+                throw new RuntimeException("Failed to send email", e);
         }
     }
 
@@ -293,7 +290,7 @@ public class EmailService {
                             <h1>New Feedback Received</h1>
                         </div>
                         <div class="content">
-                            <p>Dear <strong>%s</strong>,</p>
+                            <p>To the team at <strong>%s</strong>,</p>
                             <p>A new feedback has been submitted for a recent booking. Below are the details:</p>
                             <div class="details">
                                 <h3>Feedback Details</h3>
@@ -329,10 +326,8 @@ public class EmailService {
 
             helper.setText(htmlContent, true);
             mailSender.send(message);
-            log.info("Sent feedback notification email to {} for booking ID: {}", businessEmail, booking.getId());
         } catch (MessagingException e) {
-            log.error("Failed to send feedback email to {} for booking ID: {}. Error: {}", 
-                businessEmail, booking.getId(), e.getMessage());
+                throw new RuntimeException(e);
         }
     }
 
@@ -442,7 +437,7 @@ public class EmailService {
                             <h1>New Booking Confirmation</h1>
                         </div>
                         <div class="content">
-                            <p>Dear <strong>%s</strong>,</p>
+                            <p>To the team at <strong>%s</strong>,</p>
                             <p>A new booking has been made with your business, <strong>%s</strong>. Below are the details of the appointment:</p>
                             <div class="details">
                                 <h3>Booking Details</h3>
@@ -480,12 +475,26 @@ public class EmailService {
 
             helper.setText(htmlContent, true);
             mailSender.send(message);
-            log.info("Sent business confirmation email to {} for booking ID: {}", businessEmail, booking.getId());
         } catch (MessagingException e) {
-            log.error("Failed to send business confirmation email to {} for booking ID: {}. Error: {}", 
-                businessEmail, booking.getId(), e.getMessage());
+            throw new RuntimeException(e);
         }
     }
+
+    /*@Async
+    public void sendFeedbackEmail(Feedback feedback) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            helper.setTo(feedback.getEmail());
+            helper.setSubject("Feedback Confirmation");
+            helper.setText("Thank you for your feedback. We appreciate your valuable input.", true);
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }*/
 
 
 

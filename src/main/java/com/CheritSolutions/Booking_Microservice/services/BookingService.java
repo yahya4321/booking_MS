@@ -30,12 +30,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-@Slf4j
+
 @Service
 public class BookingService {
 
@@ -61,18 +60,14 @@ public class BookingService {
   )
   public BookingResponse createBooking(BookingRequest request, UUID clientId, Jwt jwt) {
       try {
-          log.info("Creating booking for client: {}", clientId);
           
           // Fetch service
-          log.debug("Fetching service: {}/{}", request.getBusinessId(), request.getServiceId());
           ServiceResponse service = businessServiceClient.getServiceByBusiness(
               request.getBusinessId(), 
               request.getServiceId()
           );
-          log.debug("Service found: {}", service.getName());
   
           // Fetch staff
-          log.debug("Fetching staff: {}", request.getStaffId());
           StaffResponse staff = businessServiceClient.getStaff(
     request.getBusinessId(),
     request.getStaffId()
@@ -80,12 +75,9 @@ public class BookingService {
           if (staff == null) {
               throw new BookingException("Staff not found");
           }
-          log.debug("Staff buffer time: {}", staff.getPostBufferTime());
   
   // Fetch business
-            log.debug("Fetching business: {}", request.getBusinessId());
             BusinessResponse business = businessServiceClient.getBusinessById(request.getBusinessId());
-            log.debug("Business found: {}", business.getName());
 
 
 
@@ -95,21 +87,18 @@ public class BookingService {
           int totalDuration = service.getDuration() + staff.getPostBufferTime();
   
           // Check availability
-          log.debug("Checking availability for: {}", request.getSlotStart());
           boolean isAvailable = businessServiceClient.validateStaffAvailability(
               request.getBusinessId(),
               request.getStaffId(),
               request.getSlotStart(),
               totalDuration
           );
-          log.debug("Availability check result: {}", isAvailable);
   
           if (!isAvailable) {
               throw new BookingException("Requested slot is not available");
           }
   
           // Reserve slot and get slotId
-          log.debug("Reserving slots for staff: {}", request.getStaffId());
           UUID slotId = businessServiceClient.reserveSlots(
               request.getBusinessId(),
               request.getStaffId(),
@@ -131,7 +120,6 @@ public class BookingService {
               .slotId(slotId) // Store slotId
               .status(BookingStatus.CONFIRMED)
               .build();
-          log.debug("Saving booking: {}", booking.getId());
           Booking savedBooking = bookingRepository.save(booking);
   
            // Create BookingResponse with enriched details
@@ -159,9 +147,7 @@ public class BookingService {
 
           if (userEmail != null && !userEmail.isEmpty()) {
               emailService.sendBookingConfirmationEmail(userEmail,userName, response);
-              log.debug("Triggered confirmation email to {} for booking ID: {}", userEmail, response.getId());
           } else {
-              log.warn("No email found in JWT for client ID: {}", clientId);
           }
 
 
@@ -169,16 +155,13 @@ public class BookingService {
 String businessEmail = business.getEmail(); // Assuming BusinessResponse has getEmail()
 if (businessEmail != null && !businessEmail.isEmpty()) {
     emailService.sendBusinessBookingConfirmationEmail(businessEmail, business.getName(), response);
-    log.debug("Triggered business confirmation email to {} for booking ID: {}", businessEmail, response.getId());
 } else {
-    log.warn("No email found for business ID: {}", business.getId());
 }
 
 
           return response;
 
       } catch (FeignException e) {
-          log.error("Feign error: {} - {}", e.status(), e.contentUTF8());
           if (e.status() == 404) {
               throw new BookingException("Service or staff not found", e);
           } else if (e.status() == 409) {
@@ -186,7 +169,6 @@ if (businessEmail != null && !businessEmail.isEmpty()) {
           }
           throw new BookingException("Booking failed: " + e.getMessage(), e);
       } catch (Exception e) {
-          log.error("Booking failed", e);
           throw new BookingException("Booking failed: " + e.getMessage(), e);
       }
   }
@@ -203,25 +185,19 @@ public BookingResponse getBooking(UUID bookingId) {
     public BookingResponse getBookingById(UUID bookingId, UUID clientId) {
         try {
             if (bookingId == null) {
-                log.error("Booking ID is null");
                 throw new BookingException("Booking ID cannot be null");
             }
             if (clientId == null) {
-                log.error("Client ID is null");
                 throw new BookingException("Client ID cannot be null");
             }
-            log.debug("Querying booking ID: {} for clientId: {}", bookingId, clientId);
             Booking booking = bookingRepository.findByIdAndClientId(bookingId, clientId)
                 .orElseThrow(() -> {
-                    log.warn("Booking not found for ID: {} and clientId: {}", bookingId, clientId);
                     return new BookingException("Booking not found: " + bookingId);
                 });
-            log.trace("Mapping booking ID: {}", booking.getId());
             return modelMapper.map(booking, BookingResponse.class);
         } catch (BookingException e) {
             throw e;
         } catch (Exception e) {
-            log.error("Error fetching booking ID: {} for clientId: {}", bookingId, clientId, e);
             throw new BookingException("Failed to fetch booking: " + e.getMessage(), e);
         }
     }
@@ -230,12 +206,9 @@ public BookingResponse getBooking(UUID bookingId) {
     public List<BookingResponse> getBookingsByClient(UUID clientId) {
         try {
             if (clientId == null) {
-                log.error("Client ID is null");
                 throw new BookingException("Client ID cannot be null");
             }
-            log.debug("Fetching bookings for clientId: {}", clientId);
             List<Booking> bookings = bookingRepository.findByClientId(clientId);
-            log.debug("Found {} bookings for clientId: {}", bookings.size(), clientId);
             return bookings.stream().map(booking -> {
                 // Fetch additional details
                 ServiceResponse service = businessServiceClient.getServiceByBusiness(
@@ -266,7 +239,6 @@ public BookingResponse getBooking(UUID bookingId) {
                 );
             }).collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("Error fetching bookings for clientId: {}", clientId, e);
             throw new BookingException("Failed to fetch client bookings: " + e.getMessage(), e);
         }
     }
@@ -287,7 +259,6 @@ public void cancelBooking(UUID bookingId, UUID clientId) {
         booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
     } catch (FeignException e) {
-        log.error("Failed to cancel slot: {}", e.getMessage());
         throw new BookingException("Failed to cancel slot", e);
     }
 }}
