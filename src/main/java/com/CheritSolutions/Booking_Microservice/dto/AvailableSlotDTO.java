@@ -1,6 +1,7 @@
 package com.CheritSolutions.Booking_Microservice.dto;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 public class AvailableSlotDTO {
     private Instant startTime;
@@ -51,5 +52,12 @@ public class AvailableSlotDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public long getDuration() {
+        if (startTime == null || endTime == null) {
+            return 0L;
+        }
+        return ChronoUnit.MINUTES.between(startTime, endTime);
     }
 }

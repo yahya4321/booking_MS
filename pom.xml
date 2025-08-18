@@ -69,6 +69,22 @@
             <scope>runtime</scope>
         </dependency>
 
+<dependency>
+    <groupId>com.github.ben-manes.caffeine</groupId>
+    <artifactId>caffeine</artifactId>
+</dependency>
+
+
+
+
+
+        <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-cache</artifactId>
+  </dependency>
+
+
+
         <!-- Validation -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
@@ -104,6 +120,8 @@
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
+
+
 
         <!-- Testing -->
         <dependency>

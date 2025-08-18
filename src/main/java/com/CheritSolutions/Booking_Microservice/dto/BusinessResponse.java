@@ -3,28 +3,23 @@ package com.CheritSolutions.Booking_Microservice.dto;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 public class BusinessResponse {
     private UUID id;
     private String name;
     private String address;
     private String email;
-    // private List<ServiceResponse> services;
-    // private List<StaffResponse> staff;
+    private String description;
+    private String ownerId;
+    private String phoneNumber;
+    private JsonNode schedule;
+    private Double latitude;
+    private Double longitude;
+    private List<UUID> categoryIds;
+    private List<UUID> imageIds;
 
-    // Default constructor
-    public BusinessResponse() {}
-
-    // Full constructor (optional, uncomment if needed)
-    /*
-    public BusinessResponse(UUID id, String name, String address, String email) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-        this.email = email;
-    }
-    */
-
-    // Getters and setters
+   // Getters and Setters
     public UUID getId() {
         return id;
     }
@@ -49,6 +44,14 @@ public class BusinessResponse {
         this.address = address;
     }
 
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -57,22 +60,59 @@ public class BusinessResponse {
         this.email = email;
     }
 
-    // Uncomment if you decide to include services and staff
-    /*
-    public List<ServiceResponse> getServices() {
-        return services;
+    public String getDescription() {
+        return description;
     }
 
-    public void setServices(List<ServiceResponse> services) {
-        this.services = services;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public List<StaffResponse> getStaff() {
-        return staff;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setStaff(List<StaffResponse> staff) {
-        this.staff = staff;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
-    */
+
+    public JsonNode getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(JsonNode schedule) {
+        this.schedule = schedule;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public List<UUID> getCategoryIds() {
+        return categoryIds;
+    }
+
+    public void setCategoryIds(List<UUID> categoryIds) {
+        this.categoryIds = categoryIds;
+    }
+
+    public List<UUID> getImageIds() {
+        return imageIds;
+    }
+
+    public void setImageIds(List<UUID> imageIds) {
+        this.imageIds = imageIds;
+    }
 }
