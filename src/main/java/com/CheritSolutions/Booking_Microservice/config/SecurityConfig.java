@@ -58,7 +58,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withIssuerLocation("http://localhost:8082/realms/Business-realm").build();
+        return NimbusJwtDecoder.withIssuerLocation("http://keycloak:8080/realms/Business-realm").build();
     }
 
     // 6. Define CORS configuration
