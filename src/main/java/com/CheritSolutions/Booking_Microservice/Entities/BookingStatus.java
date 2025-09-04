@@ -1,7 +1,7 @@
 package com.CheritSolutions.Booking_Microservice.Entities;
 
 public enum BookingStatus {
-    PENDING, 
+    FINISHED, 
     CONFIRMED, 
     CANCELLED
 }

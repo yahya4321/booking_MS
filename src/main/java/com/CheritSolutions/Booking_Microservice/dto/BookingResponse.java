@@ -1,3 +1,4 @@
+// src/main/java/com/CheritSolutions/Booking_Microservice/dto/BookingResponse.java
 package com.CheritSolutions.Booking_Microservice.dto;
 
 import java.math.BigDecimal;
@@ -22,6 +23,11 @@ public class BookingResponse {
     private Integer duration;
     private UUID slotId;
     private BookingStatus status;
+    private Double latitude;
+    private Double longitude;
+    private String clientName;
+    private String clientEmail;
+    private String clientPhone;
 
     // No-args constructor
     public BookingResponse() {}
@@ -30,7 +36,9 @@ public class BookingResponse {
     public BookingResponse(UUID id, UUID clientId, UUID serviceId, String serviceName,
                            BigDecimal servicePrice, UUID staffId, String staffName, String staffPosition,
                            UUID businessId, String businessName, String businessAddress,
-                           Instant slotStart, Integer duration, UUID slotId, BookingStatus status) {
+                           Instant slotStart, Integer duration, UUID slotId, BookingStatus status,
+                           Double latitude, Double longitude, String clientName, String clientEmail,
+                           String clientPhone) {
         this.id = id;
         this.clientId = clientId;
         this.serviceId = serviceId;
@@ -46,127 +54,52 @@ public class BookingResponse {
         this.duration = duration;
         this.slotId = slotId;
         this.status = status;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.clientName = clientName;
+        this.clientEmail = clientEmail;
+        this.clientPhone = clientPhone;
     }
 
     // Getters and Setters
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(UUID clientId) {
-        this.clientId = clientId;
-    }
-
-    public UUID getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(UUID serviceId) {
-        this.serviceId = serviceId;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    public BigDecimal getServicePrice() {
-        return servicePrice;
-    }
-
-    public void setServicePrice(BigDecimal servicePrice) {
-        this.servicePrice = servicePrice;
-    }
-
-    public UUID getStaffId() {
-        return staffId;
-    }
-
-    public void setStaffId(UUID staffId) {
-        this.staffId = staffId;
-    }
-
-    public String getStaffName() {
-        return staffName;
-    }
-
-    public void setStaffName(String staffName) {
-        this.staffName = staffName;
-    }
-
-    public String getStaffPosition() {
-        return staffPosition;
-    }
-
-    public void setStaffPosition(String staffPosition) {
-        this.staffPosition = staffPosition;
-    }
-
-    public UUID getBusinessId() {
-        return businessId;
-    }
-
-    public void setBusinessId(UUID businessId) {
-        this.businessId = businessId;
-    }
-
-    public String getBusinessName() {
-        return businessName;
-    }
-
-    public void setBusinessName(String businessName) {
-        this.businessName = businessName;
-    }
-
-    public String getBusinessAddress() {
-        return businessAddress;
-    }
-
-    public void setBusinessAddress(String businessAddress) {
-        this.businessAddress = businessAddress;
-    }
-
-    public Instant getSlotStart() {
-        return slotStart;
-    }
-
-    public void setSlotStart(Instant slotStart) {
-        this.slotStart = slotStart;
-    }
-
-    public Integer getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Integer duration) {
-        this.duration = duration;
-    }
-
-    public UUID getSlotId() {
-        return slotId;
-    }
-
-    public void setSlotId(UUID slotId) {
-        this.slotId = slotId;
-    }
-
-    public BookingStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(BookingStatus status) {
-        this.status = status;
-    }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
+    public UUID getClientId() { return clientId; }
+    public void setClientId(UUID clientId) { this.clientId = clientId; }
+    public UUID getServiceId() { return serviceId; }
+    public void setServiceId(UUID serviceId) { this.serviceId = serviceId; }
+    public String getServiceName() { return serviceName; }
+    public void setServiceName(String serviceName) { this.serviceName = serviceName; }
+    public BigDecimal getServicePrice() { return servicePrice; }
+    public void setServicePrice(BigDecimal servicePrice) { this.servicePrice = servicePrice; }
+    public UUID getStaffId() { return staffId; }
+    public void setStaffId(UUID staffId) { this.staffId = staffId; }
+    public String getStaffName() { return staffName; }
+    public void setStaffName(String staffName) { this.staffName = staffName; }
+    public String getStaffPosition() { return staffPosition; }
+    public void setStaffPosition(String staffPosition) { this.staffPosition = staffPosition; }
+    public UUID getBusinessId() { return businessId; }
+    public void setBusinessId(UUID businessId) { this.businessId = businessId; }
+    public String getBusinessName() { return businessName; }
+    public void setBusinessName(String businessName) { this.businessName = businessName; }
+    public String getBusinessAddress() { return businessAddress; }
+    public void setBusinessAddress(String businessAddress) { this.businessAddress = businessAddress; }
+    public Instant getSlotStart() { return slotStart; }
+    public void setSlotStart(Instant slotStart) { this.slotStart = slotStart; }
+    public Integer getDuration() { return duration; }
+    public void setDuration(Integer duration) { this.duration = duration; }
+    public UUID getSlotId() { return slotId; }
+    public void setSlotId(UUID slotId) { this.slotId = slotId; }
+    public BookingStatus getStatus() { return status; }
+    public void setStatus(BookingStatus status) { this.status = status; }
+    public Double getLatitude() { return latitude; }
+    public void setLatitude(Double latitude) { this.latitude = latitude; }
+    public Double getLongitude() { return longitude; }
+    public void setLongitude(Double longitude) { this.longitude = longitude; }
+    public String getClientName() { return clientName; }
+    public void setClientName(String clientName) { this.clientName = clientName; }
+    public String getClientEmail() { return clientEmail; }
+    public void setClientEmail(String clientEmail) { this.clientEmail = clientEmail; }
+    public String getClientPhone() { return clientPhone; }
+    public void setClientPhone(String clientPhone) { this.clientPhone = clientPhone; }
 }

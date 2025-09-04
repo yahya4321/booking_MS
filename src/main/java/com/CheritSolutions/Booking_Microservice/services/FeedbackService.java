@@ -1,10 +1,21 @@
 package com.CheritSolutions.Booking_Microservice.services;
 
+import java.time.Instant;
+import java.util.UUID;
+
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.CheritSolutions.Booking_Microservice.Controllers.BookingController;
+import com.CheritSolutions.Booking_Microservice.Controllers.BookingException;
 import com.CheritSolutions.Booking_Microservice.Entities.Booking;
 import com.CheritSolutions.Booking_Microservice.Entities.BookingStatus;
 import com.CheritSolutions.Booking_Microservice.Entities.Feedback;
-import com.CheritSolutions.Booking_Microservice.Controllers.BookingController;
-import com.CheritSolutions.Booking_Microservice.Controllers.BookingException;
 import com.CheritSolutions.Booking_Microservice.client.BusinessServiceClient;
 import com.CheritSolutions.Booking_Microservice.dto.BookingResponse;
 import com.CheritSolutions.Booking_Microservice.dto.BusinessResponse;
@@ -15,22 +26,13 @@ import com.CheritSolutions.Booking_Microservice.dto.ServiceResponse;
 import com.CheritSolutions.Booking_Microservice.dto.StaffResponse;
 import com.CheritSolutions.Booking_Microservice.repositories.BookingRepository;
 import com.CheritSolutions.Booking_Microservice.repositories.FeedbackRepository;
-import feign.FeignException;
-import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.util.UUID;
+import feign.FeignException;
 
 @Service
 public class FeedbackService {
 
-    private static final Logger log = LoggerFactory.getLogger(BookingController.class); // Declare logger
+    private static final Logger log = LoggerFactory.getLogger(BookingController.class);
 
     @Autowired
     private FeedbackRepository feedbackRepository;
@@ -53,13 +55,12 @@ public class FeedbackService {
     @Transactional
     public FeedbackResponse submitFeedback(FeedbackRequest request, UUID clientId) {
         try {
-
             // Fetch and validate booking
             Booking booking = bookingRepository.findByIdAndClientId(request.getBookingId(), clientId)
                     .orElseThrow(() -> new BookingException("Booking not found or not owned by client"));
 
             // Check booking status
-            if (booking.getStatus() != BookingStatus.CONFIRMED) {
+            if (booking.getStatus() != BookingStatus.FINISHED) {
                 throw new BookingException("Feedback can only be submitted for confirmed bookings");
             }
 
@@ -82,7 +83,6 @@ public class FeedbackService {
 
             // Save feedback
             Feedback savedFeedback = feedbackRepository.save(feedback);
-            // Fetch business details to get email and other details
 
             // Publish feedback event to Kafka
             FeedbackEvent event = new FeedbackEvent(
@@ -95,9 +95,11 @@ public class FeedbackService {
             kafkaTemplate.send("feedback.created", event.getFeedbackId().toString(), event);
             log.info("Published feedback event to Kafka: feedbackId={}", event.getFeedbackId());
 
+            // Fetch business details to get email and other details
             BusinessResponse business = businessServiceClient.getBusinessById(booking.getBusinessId());
-            String businessEmail = business.getEmail(); // Assuming BusinessResponse has getEmail()
+            String businessEmail = business.getEmail();
             if (businessEmail == null || businessEmail.isEmpty()) {
+                log.warn("No business email provided for business ID: {}", business.getId());
             } else {
                 // Fetch service and staff details to create BookingResponse
                 ServiceResponse service = businessServiceClient.getServiceByBusiness(
@@ -121,7 +123,13 @@ public class FeedbackService {
                         booking.getSlotStart(),
                         booking.getDuration(),
                         booking.getSlotId(),
-                        booking.getStatus());
+                        booking.getStatus(),
+                        business.getLatitude(),
+                        business.getLongitude(),
+                        booking.getClientName() != null ? booking.getClientName() : "Unknown",
+                        booking.getClientEmail() != null ? booking.getClientEmail() : "Unknown",
+                        booking.getClientPhone() != null ? booking.getClientPhone() : "Unknown"
+                );
 
                 // Send feedback notification email to business
                 emailService.sendBusinessFeedbackEmail(

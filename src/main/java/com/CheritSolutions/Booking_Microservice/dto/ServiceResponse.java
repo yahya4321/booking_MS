@@ -7,13 +7,17 @@ import java.util.UUID;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class ServiceResponse {
-    private UUID id;
+     private UUID id;
     private String name;
     private BigDecimal basePrice;
-    private JsonNode pricingRules;
-    private UUID businessId;
     private Integer duration;
+    private UUID businessId;
+    private String description;
+    private JsonNode pricingRules;
     private List<UUID> staffIds;
+    private List<UUID> imageIds;
+    private BigDecimal averageRating;
+    private Integer ratingCount;
 
     // Default constructor
     public ServiceResponse() {
@@ -31,6 +35,7 @@ public class ServiceResponse {
         this.staffIds = staffIds;
     }
 
+    
     // Getters and Setters
     public UUID getId() {
         return id;
@@ -48,28 +53,20 @@ public class ServiceResponse {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public BigDecimal getBasePrice() {
         return basePrice;
     }
 
     public void setBasePrice(BigDecimal basePrice) {
         this.basePrice = basePrice;
-    }
-
-    public JsonNode getPricingRules() {
-        return pricingRules;
-    }
-
-    public void setPricingRules(JsonNode pricingRules) {
-        this.pricingRules = pricingRules;
-    }
-
-    public UUID getBusinessId() {
-        return businessId;
-    }
-
-    public void setBusinessId(UUID businessId) {
-        this.businessId = businessId;
     }
 
     public Integer getDuration() {
@@ -80,6 +77,22 @@ public class ServiceResponse {
         this.duration = duration;
     }
 
+    public UUID getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(UUID businessId) {
+        this.businessId = businessId;
+    }
+
+    public JsonNode getPricingRules() {
+        return pricingRules;
+    }
+
+    public void setPricingRules(JsonNode pricingRules) {
+        this.pricingRules = pricingRules;
+    }
+
     public List<UUID> getStaffIds() {
         return staffIds;
     }
@@ -88,17 +101,28 @@ public class ServiceResponse {
         this.staffIds = staffIds;
     }
 
-    // Optional: toString method for logging/debugging
-    @Override
-    public String toString() {
-        return "ServiceResponse{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", basePrice=" + basePrice +
-                ", pricingRules=" + pricingRules +
-                ", businessId=" + businessId +
-                ", duration=" + duration +
-                ", staffIds=" + staffIds +
-                '}';
+    public List<UUID> getImageIds() {
+        return imageIds;
+    }
+
+    public void setImageIds(List<UUID> imageIds) {
+        this.imageIds = imageIds;
+    }
+
+    public BigDecimal getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(BigDecimal averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public Integer getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount;
     }
 }
+
